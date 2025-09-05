@@ -17,7 +17,7 @@ from machine import Pin,PWM,SPI,Signal,I2C
 #import max7219_8digit
 #OLED用ライブラリのインポート。OLEDの機種によって変更する。大抵の安いのはこれで動くと思う。
 #このライブラリは別途ダウンロードしてRaspberry Pi Pico Wにコピー（配置）しておく。
-from .ssd1306_i2c_JAFont import Ssd1306_i2c_JAFont
+from ssd1306_i2c_JAFont import Ssd1306_i2c_JAFont
 from debounced_input import DebouncedInput
 
 # 上記参考URLからble_advertising.pyを入手し、Pi Picoのmain.pyと同じフォルダに置く。
@@ -54,8 +54,8 @@ _ADV_NONCONN_IND = const(0x03)
 ###Bluetooth UARTの入出力(Rx,Tx)のUUID設定。
 #この値はペリフェラル側(コントローラー側)と同じUUID値をセットする。
 _UART_SERVICE_UUID = bluetooth.UUID("6E400001-B5A3-F393-E0A9-E50E24DCCA9E")
-_UART_RX_CHAR_UUID = bluetooth.UUID("6E400002-B5A3-F393-E0A9-E50E24DCCA9E")
 _UART_TX_CHAR_UUID = bluetooth.UUID("6E400003-B5A3-F393-E0A9-E50E24DCCA9E")
+_UART_RX_CHAR_UUID = bluetooth.UUID("6E400002-B5A3-F393-E0A9-E50E24DCCA9E")
 
 # Bluetooth/BLE関係の定数　おわり
 
@@ -345,7 +345,12 @@ def demo():
     #必ず顔設定を初期化する。電源投入時のみ実行される。
     if g_onFirstTime:
         multipurposeDispChange("B.T.MODE")
-        time.sleep_ms(5000)
+        for i in range(1,6):
+            multipurposeDispChange("B.T.MODE",clearDisp=True )
+            multipurposeDispChange(str(6-i)+"secWait",y=16,clearDisp=False )
+            time.sleep_ms(1000)
+            
+        #time.sleep_ms(5000)
         RelayOnAndDispChange(pin=g_BUTTON_gpio[2],onoff=True)
         time.sleep_ms(350)
         RelayOnAndDispChange(pin=g_BUTTON_gpio[2],onoff=False)
@@ -527,9 +532,9 @@ def init_():
     global g_LEDPWM
     global g_LEDHB
     #OLED(SSD1306)のi2c通信設定。
-    i2c=I2C(0, sda=pin(g_OLED_gpio["SDA"]), scl=pin(g_OLED_gpio["SCL"]), freq=1_000_000)
+    i2c=I2C(0, sda=Pin(g_OLED_gpio["SDA"]), scl=Pin(g_OLED_gpio["SCL"]), freq=1_000_000)
     #OLED(SSD1306)とi2cを紐付け。ここでi2cでSSD1306を接続するためのスレーブアドレスはここ(i2c_id)に記載する。
-    tmp=Ssd1306_i2c_JAFont(i2c,i2c_id=0x3c,128,y=32)
+    tmp=Ssd1306_i2c_JAFont(i2c,i2c_id=0x3c,x=128,y=32)
     g_OLED=tmp
     g_OLED.dispStr("INIT",fsize=4)
     g_OLED.setDefaultFsize(2)
@@ -563,7 +568,10 @@ def demo_btn():
     
     #必ず顔設定を初期化する。電源投入時のみ実行される。
     multipurposeDispChange("LINEMODE")   
-    time.sleep_ms(5000)
+    for i in range(1,6):
+        multipurposeDispChange("LINEMODE",clearDisp=True )
+        multipurposeDispChange(str(6-i)+"secWait",y=16,clearDisp=False )
+        time.sleep_ms(1000)
     RelayOnAndDispChange(pin=g_BUTTON_gpio[2],onoff=True)
     time.sleep_ms(350)
     RelayOnAndDispChange(pin=g_BUTTON_gpio[2],onoff=False)

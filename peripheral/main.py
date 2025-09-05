@@ -2,11 +2,6 @@
 # based from https://github.com/micropython/micropython/blob/master/examples/bluetooth/ble_simple_peripheral.py
 # President Nemo controller-side for Raspberry Pi Pico w.
 
-# This example demonstrates the low-level bluetooth module. For most
-# applications, we recommend using the higher-level aioble library which takes
-# care of all IRQ handling and connection management. See
-# https://github.com/micropython/micropython-lib/tree/master/micropython/bluetooth/aioble
-
 import bluetooth
 import random
 import struct
@@ -54,7 +49,7 @@ g_LEDHB_gpio=(20,)       #LED-HeartBeat for BLE
 g_LEDBATT_gpio=(8,7,6)   #LED-PWR
 g_BATTVOLT_gpio=(26,)    #Battery Voltage=GPIO26で読む
 _BATT_ADC_R1=200_000     #電池電圧測定ポイントの分圧抵抗R1。単位オーム。+側
-_BATT_ADC_R2=100_000    　#電池電圧測定ポイントの分圧抵抗R2。単位オーム。GND側
+_BATT_ADC_R2=100_000     #電池電圧測定ポイントの分圧抵抗R2。単位オーム。GND側
 _BATT_ADC_factor=(1/(_BATT_ADC_R2/(_BATT_ADC_R1+_BATT_ADC_R2)))*3.3/(2**16)     #ADC入力値と分圧比から電池電圧を計算するための比率計算。
 
 #for debounce_input callback
